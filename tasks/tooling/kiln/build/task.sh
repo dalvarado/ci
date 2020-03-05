@@ -19,7 +19,8 @@ function main() {
     echo "GITHUB_TOKEN is required"
     exit 1
   fi
-
+ 
+  export GITHUB_TOKEN=${GITHUB_TOKEN}
   cd ../
 
   local cwd

@@ -31,6 +31,8 @@ function main() {
 
   export GOPATH="${cwd}/go"
   pushd "${GOPATH}/src/github.com/dalvarado/kiln" > /dev/null
+    git tag -a -f ${version} HEAD -m "new version - ${version}"
+    git push origin :${version}
     source .envrc
     goreleaser release
   popd > /dev/null

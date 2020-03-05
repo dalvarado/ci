@@ -8,12 +8,12 @@ image_resource:
 
 inputs:
 - name: kiln
-  path: go/src/github.com/pivotal-cf/kiln
+  path: go/src/github.com/dalvarado/kiln
 - name: kiln-version
-- name: pcf-releng-ci
+- name: ci
 
 outputs:
 - name: binaries
 
 run:
-  path: pcf-releng-ci/tasks/tooling/kiln/build/task.sh
+  path: ci/tasks/tooling/kiln/build/task.sh

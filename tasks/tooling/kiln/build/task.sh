@@ -1,6 +1,27 @@
 #!/bin/bash -eu
 
 function main() {
+  
+  # clone it outside GOPATH
+  git clone https://github.com/goreleaser/goreleaser
+  cd goreleaser
+  
+  # get dependencies using go modules (needs go 1.11+)
+  go get ./...
+  
+  # build
+  go build -o goreleaser .
+  
+  # check it works
+  ./goreleaser --version
+
+  if [ -z "$GITHUB_TOKEN" ]; then
+    echo "GITHUB_TOKEN is required"
+    exit 1
+  fi
+
+  export KILN_VERSION="$(cat kiln-version/version)"
+
   local cwd
   cwd="${1}"
 
@@ -8,23 +29,10 @@ function main() {
   version="$(cat kiln-version/version)"
 
   export GOPATH="${cwd}/go"
-  pushd "${GOPATH}/src/github.com/pivotal-cf/kiln" > /dev/null
+  pushd "${GOPATH}/src/github.com/dalvarado/kiln" > /dev/null
     source .envrc
-    for OS in darwin linux windows; do
-      local name
-      name="kiln-${OS}"
-
-      if [[ "${OS}" == "windows" ]]; then
-        name="${name}.exe"
-      fi
-
-      CGO_ENABLED=0 \
-      GOOS=${OS} \
-      GOARCH=amd64 \
-        go build \
-          -ldflags "-X main.version=${version}" \
-          -o "${cwd}/binaries/${name}" \
-          main.go
+    go version
+    goreleaser release
     done
   popd > /dev/null
 }

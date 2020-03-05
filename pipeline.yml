@@ -1,0 +1,65 @@
+- name: kiln
+  jobs:
+  - release-kiln
+
+resources:
+- name: ci
+  type: git
+  source:
+    uri: git@github.com:dalvarado/ci.git
+    branch: master
+    paths:
+    - tasks
+    - dockerfiles
+    - vendor
+    
+
+- name: kiln
+  type: git
+  source:
+    uri: https://github.com/dalvarado/kiln
+    branch: master
+    ignore_paths:
+    - version
+    - README.md
+
+- name: kiln-release
+  type: github-release
+  source:
+    user: dalvarado
+    repository: kiln
+    access_token: ((github_releng_ci_bot_access_token))
+
+- name: kiln-version
+  type: semver
+  source:
+    initial_version: 0.0.0
+    driver: git
+    uri: git@github.com:dalvarado/kiln.git
+    branch: master
+    file: version
+    private_key: ((kiln_private_key))
+
+
+jobs:
+
+# Kiln
+- name: release-kiln
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: kiln   
+    - get: kiln-version
+      params:
+        bump: minor
+  - task: build
+    file: ci/tasks/tooling/kiln/build/task.yml
+  - put: kiln-version
+    params:
+      bump: minor
+  - put: kiln-release
+    params:
+      name: kiln-version/number
+      tag: kiln-version/number
+      globs:
+      - binaries/kiln-*

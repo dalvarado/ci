@@ -14,7 +14,7 @@ function main() {
   # check it works
   ./goreleaser --version
 
-  export GITHUB_TOKEN="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDbyS1icKmLvvAfBlIkrz2Cave70MR1xDU6mdTYY/gtOZTo+8WpJFc9V2Ql3gfGFKTnzkvZSgWZiB5HaMBDeTnn6YSCR2WyAbdXyhBkJLARpohzp9jFKx/hYRCmcYTC004B0WFnmFl5XQienCevJqONTLlLAWZTH4UKyrnp6GmXAUfJQ3wDTnBA+WUxtyGFbjIbY6Y3fntXYdljRinAd/Kd0DuYR5Opo7bz0RmWVlFM1JuGT1nC0kiDtX/J+gayE+yXMF1lVUnnbEu1r7vz5Kiy0fn+1BjT2H3/ATPsUtk3Zrv56jgpi/QBNUw+eFTHSt9tuDwx9qRFVyMYUCxJ5QCH"
+  export GITHUB_TOKEN=554a9f09e2248696b71ddbef2a9d8015c19f9df2 
 
   if [ -z "$GITHUB_TOKEN" ]; then
     echo "GITHUB_TOKEN is required"
@@ -31,10 +31,7 @@ function main() {
 
   export GOPATH="${cwd}/go"
   pushd "${GOPATH}/src/github.com/dalvarado/kiln" > /dev/null
-    git config user.email "test@example.com"
-    git config user.name "CI Bot"
     git tag -a -f ${version} HEAD -m "new version - ${version}"
-    git push origin :${version}
     source .envrc
     goreleaser release
   popd > /dev/null

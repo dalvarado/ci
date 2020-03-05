@@ -31,6 +31,8 @@ function main() {
 
   export GOPATH="${cwd}/go"
   pushd "${GOPATH}/src/github.com/dalvarado/kiln" > /dev/null
+    git config user.email "test@example.com"
+    git config user.name "Test name"
     git tag -a -f ${version} HEAD -m "new version - ${version}"
     source .envrc
     goreleaser release

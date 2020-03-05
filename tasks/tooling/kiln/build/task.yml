@@ -1,0 +1,19 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pivotalcfreleng/golang
+
+inputs:
+- name: kiln
+  path: go/src/github.com/pivotal-cf/kiln
+- name: kiln-version
+- name: pcf-releng-ci
+
+outputs:
+- name: binaries
+
+run:
+  path: pcf-releng-ci/tasks/tooling/kiln/build/task.sh

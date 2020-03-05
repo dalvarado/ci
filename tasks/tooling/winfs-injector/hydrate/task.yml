@@ -1,0 +1,18 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: pivotalcfreleng/minimal}
+
+inputs:
+- name: pcf-releng-ci
+  path: go/src/github.com/pivotal-cf/pcf-releng-ci
+- name: wrt-unhydrated
+- name: winfs-injector-release
+
+outputs:
+- name: wrt
+
+run:
+  path: go/src/github.com/pivotal-cf/pcf-releng-ci/tasks/tooling/winfs-injector/hydrate/task.sh

@@ -1,0 +1,26 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source: {repository: pivotalcfreleng/infrastructure}
+inputs:
+- name: planitest
+  path: go/src/github.com/pivotal-cf/planitest
+run:
+  path: "/bin/bash"
+  args:
+  - "-c"
+  - |
+    set -exu
+
+    export GOPATH="$(pwd)/go"
+    pushd "${GOPATH}/src/github.com/pivotal-cf/planitest" > /dev/null
+      ginkgo \
+        -r \
+        -race \
+        -succinct \
+        -randomizeAllSpecs \
+        -randomizeSuites \
+        -failOnPending \
+        .
+    popd > /dev/null
+

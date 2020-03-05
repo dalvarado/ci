@@ -1,0 +1,19 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pivotalcfreleng/golang
+
+inputs:
+- name: replicator
+  path: go/src/github.com/pivotal-cf/replicator
+- name: replicator-version
+- name: pcf-releng-ci
+
+outputs:
+- name: binaries
+
+run:
+  path: pcf-releng-ci/tasks/tooling/replicator/build/task.sh

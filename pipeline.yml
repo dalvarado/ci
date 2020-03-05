@@ -1,34 +1,25 @@
-- name: kiln
-  jobs:
-  - release-kiln
-
 resources:
 - name: ci
   type: git
   source:
-    uri: git@github.com:dalvarado/ci.git
+    uri: https://github.com/dalvarado/ci
     branch: master
     paths:
     - tasks
     - dockerfiles
     - vendor
-    
+
 
 - name: kiln
   type: git
   source:
-    uri: https://github.com/dalvarado/kiln
+    uri: git@github.com:dalvarado/kiln
     branch: master
+    private_key: ((create_new_deploy_keys_private_here))
     ignore_paths:
     - version
     - README.md
 
-- name: kiln-release
-  type: github-release
-  source:
-    user: dalvarado
-    repository: kiln
-    access_token: ((github_releng_ci_bot_access_token))
 
 - name: kiln-version
   type: semver
@@ -36,30 +27,34 @@ resources:
     initial_version: 0.0.0
     driver: git
     uri: git@github.com:dalvarado/kiln.git
+    git_user: dalvarado@pivotal.io
     branch: master
     file: version
-    private_key: ((kiln_private_key))
-
-
+    username: dalvarado
+    private_key: ((create_new_deploy_keys_private_here))
 jobs:
 
 # Kiln
-- name: release-kiln
+- name: update-kiln-version
   plan:
   - in_parallel:
-    - get: ci
-    - get: kiln   
     - get: kiln-version
       params:
         bump: minor
-  - task: build
-    file: ci/tasks/tooling/kiln/build/task.yml
   - put: kiln-version
     params:
       bump: minor
-  - put: kiln-release
+
+- name: create-kiln-release
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: kiln
+    - get: kiln-version
+      trigger: true
+      passed:
+      - update-kiln-version
+  - task: build
+    file: ci/tasks/tooling/kiln/build/task.yml
     params:
-      name: kiln-version/number
-      tag: kiln-version/number
-      globs:
-      - binaries/kiln-*
+      GITHUB_TOKEN: ((API_TOKEN_TO_UPDATE_RELEASE))

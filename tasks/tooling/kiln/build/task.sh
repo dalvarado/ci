@@ -14,7 +14,6 @@ function main() {
   # check it works
   ./goreleaser --version
 
-  export GITHUB_TOKEN=554a9f09e2248696b71ddbef2a9d8015c19f9df2 
 
   if [ -z "$GITHUB_TOKEN" ]; then
     echo "GITHUB_TOKEN is required"

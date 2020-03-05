@@ -17,3 +17,6 @@ outputs:
 
 run:
   path: ci/tasks/tooling/kiln/build/task.sh
+
+params:
+  GITHUB_TOKEN:

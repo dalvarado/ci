@@ -33,7 +33,6 @@ function main() {
     source .envrc
     go version
     goreleaser release
-    done
   popd > /dev/null
 }
 

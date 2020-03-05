@@ -21,6 +21,8 @@ function main() {
     exit 1
   fi
 
+  cd ../
+
   local cwd
   cwd="${1}"
 

@@ -8,12 +8,9 @@ image_resource:
 
 inputs:
 - name: kiln
-  path: go/src/github.com/dalvarado/kiln
 - name: kiln-version
 - name: ci
-
-outputs:
-- name: binaries
+- name: goreleaser
 
 run:
   path: ci/tasks/tooling/kiln/build/task.sh

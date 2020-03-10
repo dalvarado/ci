@@ -9,6 +9,11 @@ resources:
     - dockerfiles
     - vendor
 
+- name: goreleaser
+  type: git
+  source:
+    uri: https://github.com/goreleaser/goreleaser
+    branch: master
 
 - name: kiln
   type: git
@@ -49,6 +54,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
+    - get: goreleaser
     - get: kiln
     - get: kiln-version
       trigger: true

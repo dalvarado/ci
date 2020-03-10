@@ -1,40 +1,22 @@
 #!/bin/bash -eu
 
+: "${GITHUB_TOKEN:?}"
+[[ -d goreleaser ]] || (>&2 echo "goreleaser directory is required" && exit 1)
+[[ -f kiln-version/version ]] || (>&2 echo "kiln-version/version file is required" && exit 1)
+
 function main() {
-  # clone it outside GOPATH
-  git clone https://github.com/goreleaser/goreleaser
-  cd goreleaser
-  
-  # get dependencies using go modules (needs go 1.11+)
-  go get ./...
-  
-  # build
-  go build -o goreleaser .
-  
-  # check it works
-  ./goreleaser --version
-
-
-  if [ -z "$GITHUB_TOKEN" ]; then
-    echo "GITHUB_TOKEN is required"
-    exit 1
-  fi
- 
-  export GITHUB_TOKEN=${GITHUB_TOKEN}
-  cd ../
-
-  local cwd
+  local cwd version
   cwd="${1}"
+  version="$(cat "${cwd}/kiln-version/version")"
 
-  local version
-  version="$(cat kiln-version/version)"
+  pushd "${cwd}/goreleaser" > /dev/null
+    go get ./...
+  popd > /dev/null
 
-  export GOPATH="${cwd}/go"
-  pushd "${GOPATH}/src/github.com/dalvarado/kiln" > /dev/null
-    git config user.email "test@example.com"
-    git config user.name "Test name"
-    git tag -a -f ${version} HEAD -m "new version - ${version}"
-    source .envrc
+  pushd "${cwd}/kiln" > /dev/null
+    git config --global user.name "Release Engineering Bot"
+    git config --global user.email "cf-release-engineering@pivotal.io"
+    git tag -f "$version" HEAD
     goreleaser release
   popd > /dev/null
 }
